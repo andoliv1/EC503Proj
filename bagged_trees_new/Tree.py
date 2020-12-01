@@ -31,9 +31,11 @@ class Tree:
         num_random: what is the number of random features to partition each node. This is only valid if want_random == 1
         """
      
-    
+        
         # if your depth is 0 or there return and assign a value to your node which is the majority vote of the labels
         if(tree.depth == 0 or (True == (tree is None))):
+            # print(data)
+            # print(labels)
             tree.val = np.sign(np.sum(labels))
             return tree
 
@@ -61,23 +63,38 @@ class Tree:
             
             #record the best split onto your tree object
             tree.boundary = np.array([best_split,best_dimension])
+            # print("Data")
+            # print(data)
+            # print(data_left)
+            # print(data_right)
 
+            # print("labels")
+            # print(labels)
+            # print(labels_left)
+            # print(labels_right)
             if(data.size == data_left.size):
-                tree.val = np.sign(np.sum(labels))
+                #make the left tree and right tree recursively based on the same idea until you reach the depth wanted
+                tree_left = Tree(None,tree.depth - 1,None,None,0)
+                tree_left = Tree.make_tree(tree_left,data_left,labels_left,want_random,num_random)
+                tree.left = tree_left
+                tree.right = None
+
+            elif(data.size == data_right.size):
+                tree_right = Tree(None,tree.depth - 1,None,None,0)
+                tree_right = Tree.make_tree(tree_right,data_right,labels_right,want_random,num_random)
+                tree.right = tree_right
+                tree.left = None
                 return tree
 
-            if(data.size == data_right.size):
-                tree.val = np.sign(np.sum(labels))
-                return tree
-
-            #make the left tree and right tree recursively based on the same idea until you reach the depth wanted
-            tree_left = Tree(None,tree.depth - 1,None,None,0)
-            tree_left = Tree.make_tree(tree_left,data_left,labels_left,want_random,num_random)
-            tree.left = tree_left
-        
-            tree_right = Tree(None,tree.depth - 1,None,None,0)
-            tree_right = Tree.make_tree(tree_right,data_right,labels_right,want_random,num_random)
-            tree.right = tree_right
+            else:
+                #make the left tree and right tree recursively based on the same idea until you reach the depth wanted
+                tree_left = Tree(None,tree.depth - 1,None,None,0)
+                tree_left = Tree.make_tree(tree_left,data_left,labels_left,want_random,num_random)
+                tree.left = tree_left
+            
+                tree_right = Tree(None,tree.depth - 1,None,None,0)
+                tree_right = Tree.make_tree(tree_right,data_right,labels_right,want_random,num_random)
+                tree.right = tree_right
 
         return tree
   
@@ -97,7 +114,6 @@ class Tree:
         best_dimension = 0
 
         # since we don't necessarily want to split the data at a point split it a little bit after a point, although this doesn't really matter
-        epsilon = 0.00001
 
         #since we have discrete data we can find the best split by greedily splitting across each data point
         for i in data:
@@ -106,12 +122,12 @@ class Tree:
             for t in random_dimensions:
 
                 # calculate the impurity score of the split
-                impurity_temp = Tree.compute_index(data,labels,i[int(t)] + epsilon,int(t))
+                impurity_temp = Tree.compute_index(data,labels,i[int(t)],int(t))
 
                 # if this is the best found split record it 
                 if(best_impurity_score > impurity_temp):
                     best_impurity_score = impurity_temp
-                    best_split = i[int(t)] + epsilon
+                    best_split = i[int(t)] 
                     best_dimension = int(t)
 
         return [best_split,best_impurity_score,best_dimension]
@@ -137,7 +153,7 @@ class Tree:
         counter = 0
         for i in data:
             #if the data is smaller than the separator at the given dimension location than put it in b_1
-            if(i[dimension] < separator):
+            if(i[dimension] <= separator):
                 counters[0] +=1
                 # put the data point in the appropriate spot inside b_1, the first spot is for 
                 # the points that belong to class 1 and the second is for the points that belong to class 2
@@ -197,7 +213,7 @@ class Tree:
         for i in data:
             
             #if the data value is smaller than the best_split at the given best_dimension location
-            if(i[best_dimension] < best_split):
+            if(i[best_dimension] <= best_split):
 
                 # if there have been no points smaller than the split yet initialize the array to contain these points
                 if(init_1 == 0):
@@ -242,9 +258,17 @@ class Tree:
 
         # if you have reached a node where you can't go deeper into the left or right node than it means you are at a leaf node
         # and shold return the value of your leaf node 
-        if((tree.left is None) or (tree.right is None)):
+        if((tree.left is None) and (tree.right is None)):
             return tree.val
         
+        elif(tree.left is None):
+            x= Tree.evaluate_point(tree.right,test_point)
+            return x
+        
+        elif(tree.right is None):
+            x= Tree.evaluate_point(tree.left,test_point)
+            return x
+
         # else continue parsing the tree until you are at a leaf node
         else:
             if(test_point[0,int(tree.boundary[1])] > tree.boundary[0]):
