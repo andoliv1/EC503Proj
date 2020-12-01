@@ -23,17 +23,23 @@ print(type(X_Train))
 from sklearn.preprocessing import StandardScaler
 sc_X = StandardScaler()
 X_Train = sc_X.fit_transform(X_Train)
+data = X_Train
+labels = Y_Train
+print(labels)
 
 depth = 10
 tree = Tree(None,depth,None,None,0)
-tree = Tree.make_tree(tree,X_Train,Y_Train,1,1)
+tree = Tree.make_tree(tree,data,labels,1,1)
 
-ccr = 0
-counter = 0
-for i in data:
-    point = np.array([i])
-    ccr += (labels[counter] == Tree.evaluate_point(tree,point))
-    counter +=1
+Y_Pred = Tree.evaluate_data(tree, data)
+print(Y_Pred.shape)
 
-print(counter)
-print("This is the CCR " , str(ccr/(counter)))
+# ccr = 0
+# counter = 0
+# for i in data:
+#     point = np.array([i])
+#     ccr += (labels[counter] == Tree.evaluate_point(tree,point))
+#     counter +=1
+
+# print(counter)
+# print("This is the CCR " , str(ccr/(counter)))

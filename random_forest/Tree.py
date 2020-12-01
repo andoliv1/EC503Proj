@@ -23,6 +23,7 @@ class Tree:
 
     @staticmethod
     def make_tree(tree,data,labels,want_random,num_random):
+       
         """
         tree: Tree object that we wish to build
         data: numpy array that contains the data which your Tree will be built upon
@@ -30,7 +31,6 @@ class Tree:
         want_random: integer that specifies if you will parition each node based on a random subset of features
         num_random: what is the number of random features to partition each node. This is only valid if want_random == 1
         """
-     
     
         # if your depth is 0 or there return and assign a value to your node which is the majority vote of the labels
         if(tree.depth == 0 or (True == (tree is None))):
@@ -97,7 +97,7 @@ class Tree:
         best_dimension = 0
 
         # since we don't necessarily want to split the data at a point split it a little bit after a point, although this doesn't really matter
-        epsilon = 0.00001
+        epsilon = 0.01
 
         #since we have discrete data we can find the best split by greedily splitting across each data point
         for i in data:
@@ -265,11 +265,9 @@ class Tree:
         """
         init = 0
         for point in data:
-            point = np.array([point])
             if(init == 0):
-                evaluation = np.array([Tree.evaluate_point(tree,point)])
-                init += 1
+                evaluation = np.array([evaluate_point(tree,point)])
             else:
-                evaluation = np.concatenate((evaluation,[Tree.evaluate_point(tree,point)]), axis=0)
+                evaluation = np.concatenate((evaluation,[evaluate_point(tree,point)]), axis=0)
         return evaluation
 
