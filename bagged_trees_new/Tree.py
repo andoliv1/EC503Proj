@@ -31,9 +31,7 @@ class Tree:
         num_random: what is the number of random features to partition each node. This is only valid if want_random == 1
         """
      
-        print(type(labels))
-        print("This is labels")
-        print(labels)
+    
         # if your depth is 0 or there return and assign a value to your node which is the majority vote of the labels
         if(tree.depth == 0 or (True == (tree is None))):
             tree.val = np.sign(np.sum(labels))
@@ -71,7 +69,7 @@ class Tree:
             if(data.size == data_right.size):
                 tree.val = np.sign(np.sum(labels))
                 return tree
-        
+
             #make the left tree and right tree recursively based on the same idea until you reach the depth wanted
             tree_left = Tree(None,tree.depth - 1,None,None,0)
             tree_left = Tree.make_tree(tree_left,data_left,labels_left,want_random,num_random)

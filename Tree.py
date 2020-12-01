@@ -31,10 +31,7 @@ class Tree:
         want_random: integer that specifies if you will parition each node based on a random subset of features
         num_random: what is the number of random features to partition each node. This is only valid if want_random == 1
         """
-        
-        print(type(labels))
-        print("This is labels")
-        print(labels)
+    
         # if your depth is 0 or there return and assign a value to your node which is the majority vote of the labels
         if(tree.depth == 0 or (True == (tree is None))):
             tree.val = np.sign(np.sum(labels))
@@ -64,7 +61,7 @@ class Tree:
             
             #record the best split onto your tree object
             tree.boundary = np.array([best_split,best_dimension])
-            
+
             if(data.size == data_left.size):
                 tree.val = np.sign(np.sum(labels))
                 return tree
