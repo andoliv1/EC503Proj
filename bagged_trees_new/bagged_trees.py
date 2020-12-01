@@ -98,27 +98,27 @@ def crossval(X_Train, Y_Train, X_Test, Y_Test, classifier, filename, num_trees_l
     return avg_trainccr, avg_testccr
 
 
-filename = 'saved_trees.pkl'
-num_trees_list = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]
-reps = 50
-print("\nCross-Validation Tree Number List:")
-print(num_trees_list)
-[avg_trainccr, avg_testccr] = crossval(X_Train, Y_Train, X_Test, Y_Test, classifier, filename, num_trees_list, reps)
-print("\nAverage Training CCR for model with respective number of trees:")
-print(avg_trainccr)
-print("\nAverage Testing CCR for model with respective number of trees:")
-print(avg_testccr)
+# filename = 'saved_trees.pkl'
+# num_trees_list = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]
+# reps = 50
+# print("\nCross-Validation Tree Number List:")
+# print(num_trees_list)
+# [avg_trainccr, avg_testccr] = crossval(X_Train, Y_Train, X_Test, Y_Test, classifier, filename, num_trees_list, reps)
+# print("\nAverage Training CCR for model with respective number of trees:")
+# print(avg_trainccr)
+# print("\nAverage Testing CCR for model with respective number of trees:")
+# print(avg_testccr)
 
-plt.plot(num_trees_list, avg_trainccr)
-plt.title('Average Training CCR v. Number of Trees')
-plt.xlabel('Number of Trees')
-plt.ylabel('Average Training CCR')
-plt.show()
-plt.plot(num_trees_list, avg_testccr)
-plt.title('Average Testing CCR v. Number of Trees')
-plt.xlabel('Number of Trees')
-plt.ylabel('Average Testing CCR')
-plt.show()
+# plt.plot(num_trees_list, avg_trainccr)
+# plt.title('Average Training CCR v. Number of Trees')
+# plt.xlabel('Number of Trees')
+# plt.ylabel('Average Training CCR')
+# plt.show()
+# plt.plot(num_trees_list, avg_testccr)
+# plt.title('Average Testing CCR v. Number of Trees')
+# plt.xlabel('Number of Trees')
+# plt.ylabel('Average Testing CCR')
+# plt.show()
 
 
 
