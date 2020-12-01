@@ -23,6 +23,7 @@ class Tree:
 
     @staticmethod
     def make_tree(tree,data,labels,want_random,num_random):
+       
         """
         tree: Tree object that we wish to build
         data: numpy array that contains the data which your Tree will be built upon
@@ -30,6 +31,10 @@ class Tree:
         want_random: integer that specifies if you will parition each node based on a random subset of features
         num_random: what is the number of random features to partition each node. This is only valid if want_random == 1
         """
+        
+        print(type(labels))
+        print("This is labels")
+        print(labels)
         # if your depth is 0 or there return and assign a value to your node which is the majority vote of the labels
         if(tree.depth == 0 or (True == (tree is None))):
             tree.val = np.sign(np.sum(labels))
@@ -52,14 +57,21 @@ class Tree:
                 # if you don't want random than you want to greedily split across all dimensions
                 dim_array = np.linspace(0,dimensions-1,dimensions)
 
-            print(dim_array)
+            # print(dim_array)
             # compute the optimal split and fetch the partitioned data after the split
             [best_split,best_impurity_score,best_dimension] = Tree.make_optimal_split(data,labels,dim_array)
             [data_left,data_right,labels_left,labels_right] = Tree.split_data(data,labels,best_split,best_dimension)
             
             #record the best split onto your tree object
             tree.boundary = np.array([best_split,best_dimension])
+            
+            if(data.size == data_left.size):
+                tree.val = np.sign(np.sum(labels))
+                return tree
 
+            if(data.size == data_right.size):
+                tree.val = np.sign(np.sum(labels))
+                return tree
 
             #make the left tree and right tree recursively based on the same idea until you reach the depth wanted
             tree_left = Tree(None,tree.depth - 1,None,None,0)

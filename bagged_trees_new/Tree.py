@@ -30,6 +30,10 @@ class Tree:
         want_random: integer that specifies if you will parition each node based on a random subset of features
         num_random: what is the number of random features to partition each node. This is only valid if want_random == 1
         """
+     
+        print(type(labels))
+        print("This is labels")
+        print(labels)
         # if your depth is 0 or there return and assign a value to your node which is the majority vote of the labels
         if(tree.depth == 0 or (True == (tree is None))):
             tree.val = np.sign(np.sum(labels))
@@ -52,7 +56,7 @@ class Tree:
                 # if you don't want random than you want to greedily split across all dimensions
                 dim_array = np.linspace(0,dimensions-1,dimensions)
 
-            print(dim_array)
+            # print(dim_array)
             # compute the optimal split and fetch the partitioned data after the split
             [best_split,best_impurity_score,best_dimension] = Tree.make_optimal_split(data,labels,dim_array)
             [data_left,data_right,labels_left,labels_right] = Tree.split_data(data,labels,best_split,best_dimension)
@@ -60,7 +64,14 @@ class Tree:
             #record the best split onto your tree object
             tree.boundary = np.array([best_split,best_dimension])
 
+            if(data.size == data_left.size):
+                tree.val = np.sign(np.sum(labels))
+                return tree
 
+            if(data.size == data_right.size):
+                tree.val = np.sign(np.sum(labels))
+                return tree
+        
             #make the left tree and right tree recursively based on the same idea until you reach the depth wanted
             tree_left = Tree(None,tree.depth - 1,None,None,0)
             tree_left = Tree.make_tree(tree_left,data_left,labels_left,want_random,num_random)
@@ -88,7 +99,7 @@ class Tree:
         best_dimension = 0
 
         # since we don't necessarily want to split the data at a point split it a little bit after a point, although this doesn't really matter
-        epsilon = 0.01
+        epsilon = 0.00001
 
         #since we have discrete data we can find the best split by greedily splitting across each data point
         for i in data:
