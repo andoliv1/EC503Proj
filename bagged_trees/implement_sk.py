@@ -40,7 +40,7 @@ plt.show()
 
 # Example 
 num_trees = 10
-filename = 'savedtrees.pkl'
+filename = 'saved_trees.pkl'
 [trainccr, testccr] = ccr(X_Train, Y_Train, X_Test, Y_Test, classifier, num_trees, filename)
 print("\nExample with Tree Number = " + str(num_trees))
 print("Training CCR is: " + str(trainccr))
