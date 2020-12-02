@@ -5,6 +5,8 @@ import pandas as pd
 import random
 import scipy.stats
 import pickle
+# Decision Tree Classifier Function
+from Tree import Tree
 
 # Importing the datasets
 datasets = pd.read_csv('Social_Network_Ads.csv')
@@ -31,23 +33,27 @@ def bootstrap(X_Train, Y_Train, ratio):
         fsample[i] = Y_Train[idx]
     return sample, fsample
 
-# Decision Trees Definition
-classifier = Tree(None,depth,None,None,0)
-
 # Ensemble Learning
-def random_forest(X_Train, Y_Train, classifier, num_trees, ratio):
+def random_forest(X_Train, Y_Train, bootstrap_ratio, sub_features, depth, num_trees):
+    if sub_features == 'sqrt':
+        sub_features = int(np.sqrt(X_Train.shape[1]))
+    elif sub_features == 'log2':
+        sub_features = int(np.log2(X_Train.shape[1]))
+    else:
+        sub_features = int(sub_features)
+    classifier = Tree(None,depth,None,None,0)
     savename = 'saved_trees.pkl'
     file = open(savename,'wb') 
     pickle.dump(num_trees, file) # store number of trees as first object in pickle
     for i in range(num_trees):
-        [X_sam, Y_sam] = bootstrap(X_Train, Y_Train, ratio)
+        [X_sam, Y_sam] = bootstrap(X_Train, Y_Train, bootstrap_ratio)
         tree = classifier
-        tree = Tree.make_tree(tree,X_Train,Y_Train,1,1)
+        tree = Tree.make_tree(tree,X_Train,Y_Train,1,sub_features)
         pickle.dump(tree, file)
     file.close
 
 # Ensemble Predictions
-def bagged_trees_pred(X_data):
+def random_forest_pred(X_data):
     filename = 'saved_trees.pkl'
     file = open(filename, 'rb') 
     num_trees = pickle.load(file) # load tree number from pickle
@@ -55,64 +61,8 @@ def bagged_trees_pred(X_data):
     y_pred_mat = np.zeros(shape=(n,num_trees)) # instantiate matrix of predictions from all trees
     for i in range(num_trees):
         tree = pickle.load(file)
-        y_pred_mat[:,i] = tree.predict(X_data)
+        y_pred_mat[:,i] = Tree.evaluate_data(tree, X_data)
     [y_pred,_] = scipy.stats.mode(y_pred_mat, axis = 1) # take mode of the matrix to combine tree predictions
     file.close
     return np.ravel(y_pred)
-
-
-# Training and Testing CCR
-def ccr(X_Train, Y_Train, X_Test, Y_Test, classifier, num_trees, ratio):
-    trees = bagged_trees(X_Train, Y_Train, classifier, num_trees, ratio)
-    y_train_pred = bagged_trees_pred(X_Train)
-    y_test_pred = bagged_trees_pred(X_Test)
-    trainccr = sum(y_train_pred==Y_Train)/Y_Train.size
-    testccr = sum(y_test_pred==Y_Test)/Y_Test.size
-    return trainccr, testccr
-
-
-# Cross-Validation
-def crossval(X_Train, Y_Train, X_Test, Y_Test, classifier, num_trees_list, reps):
-    print("\nCross Validation Iterations:")
-    avg_trainccr = np.ravel(np.zeros(shape = (1,len(num_trees_list))))
-    avg_testccr = np.ravel(np.zeros(shape = (1,len(num_trees_list))))
-    idx = 0
-    for i in num_trees_list:
-        print(idx)
-        num_trainccr = 0
-        num_testccr = 0
-        for j in range(reps):
-            [trainccr, testccr] = ccr(X_Train, Y_Train, X_Test, Y_Test, classifier, i)
-            num_trainccr = num_trainccr + trainccr
-            num_testccr = num_testccr + testccr
-        avg_trainccr[idx] = num_trainccr/reps
-        avg_testccr[idx] = num_testccr/reps
-        idx+=1
-    return avg_trainccr, avg_testccr
-
-
-# filename = 'saved_trees.pkl'
-# num_trees_list = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]
-# reps = 50
-# print("\nCross-Validation Tree Number List:")
-# print(num_trees_list)
-# [avg_trainccr, avg_testccr] = crossval(X_Train, Y_Train, X_Test, Y_Test, classifier, filename, num_trees_list, reps)
-# print("\nAverage Training CCR for model with respective number of trees:")
-# print(avg_trainccr)
-# print("\nAverage Testing CCR for model with respective number of trees:")
-# print(avg_testccr)
-
-# plt.plot(num_trees_list, avg_trainccr)
-# plt.title('Average Training CCR v. Number of Trees')
-# plt.xlabel('Number of Trees')
-# plt.ylabel('Average Training CCR')
-# plt.show()
-# plt.plot(num_trees_list, avg_testccr)
-# plt.title('Average Testing CCR v. Number of Trees')
-# plt.xlabel('Number of Trees')
-# plt.ylabel('Average Testing CCR')
-# plt.show()
-
-
-
 
