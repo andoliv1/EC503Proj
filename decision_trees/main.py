@@ -1,42 +1,110 @@
-# Bagged Trees Classifier Imports
-import numpy as np
 import matplotlib.pyplot as plt
-import pandas as pd
-import random
-import scipy.stats
-import pickle
-from RForest import random_forest, random_forest_pred
+import numpy as np 
 from Tree import Tree
 
-# Decision Tree Classifier Imports
-from Tree import Tree
+def main():
+    print("This is a decsion tree test")
+    val = input("Enter how many points in class 1 do you want:  ")
+    val2 = input("Enter how many points in class 2 do you want: ")
 
-# Importing the datasets
-datasets = pd.read_csv('Social_Network_Ads.csv')
-X = datasets.iloc[:, [2,3]].values
-Y = datasets.iloc[:, 4].values
-Y = np.where(Y==0, -1, Y)
+    try:
+        val_i = int(val)
+        val_i2 = int(val2)
+        if(val_i <= 0 or val_i2 <= 0):
+            raise Exception()
+    except Exception:
+        print("Please input integers greater than zero only and run the program again")
+        return ;
 
-# Splitting the dataset into the Training set and Test set
-from sklearn.model_selection import train_test_split
-X_Train, X_Test, Y_Train, Y_Test = train_test_split(X, Y, test_size = 0.25, random_state = 0)
+    plt.figure()
+    npArray = np.ones((100,100))
+    print("Click on the grid to make your dataset for class 1")
 
-from sklearn.preprocessing import StandardScaler
-sc_X = StandardScaler()
-X_Train = sc_X.fit_transform(X_Train)
-X_Test = sc_X.transform(X_Test)
+    plt.imshow(npArray)
+    s_1 = plt.ginput(n = val_i,show_clicks = True)
+    s_1 = np.array(s_1)
 
-# Random Forest Learning and Predictions
-depth = 10
-sub_features = 'log2' #'sqrt' and int options too
-num_trees = 100
-bootstrap_ratio = .3
-random_forest(X_Train, Y_Train, bootstrap_ratio, sub_features, depth, num_trees)
-Y_Pred = random_forest_pred(X_Train)
-Y_Pred_test = random_forest_pred(X_Test)
+    print("Click on the grid to make your dataset for class 2")
+    npArray = 0.5*np.ones((100,100))
+    plt.imshow(npArray)
 
-# Training and Testing CCR
-trainccr = sum(Y_Pred==Y_Train)/Y_Train.size
-testccr = sum(Y_Pred_test==Y_Test)/Y_Test.size
-print("Training CCR is: " + str(trainccr))
-print("Testing CCR is: " + str(testccr))
+    s_2 = plt.ginput(n = val_i2,show_clicks = True)
+    s_2 = np.array(s_2)
+    data = np.concatenate((s_1, s_2), axis=0)
+
+    labels_1 = np.ones((s_1.shape)[0])
+    labels_2 = -1*np.ones((s_2.shape)[0])
+    labels = np.concatenate((labels_1,labels_2), axis = 0)
+
+    depth = input("Please input the depth of your decision tree: ")
+    try:
+        depth_i = int(depth)
+        if(depth_i <= 0):
+            raise Exception()
+    except Exception:
+        print("Please input integers greater than zero only and run the program again")
+        return;
+
+    # print(data)
+    # print(labels)
+    tree = Tree(None,depth_i,None,None,0)
+
+    tree = Tree.make_tree(tree,data,labels,1,1)
+
+    # tree.PrintTree()
+    size = 400
+    nx = np.linspace(0,100,size)
+    ny = np.linspace(0,100,size)
+    init_1 = 0
+    init_2 = 0
+
+    for i in nx:
+        for j in ny:
+            test_point = np.array([[i,j]])
+            point_eval = Tree.evaluate_point(tree,test_point)
+            if(point_eval == 1):
+                if(init_1 == 0):
+                    grid_1 = np.array([[i,j]])
+                else:
+                    grid_1 = np.concatenate((grid_1,[[i,j]]), axis = 0)
+                init_1 += 1
+            else:
+                if(init_2 == 0):
+                    grid_2 = np.array([[i,j]])
+                else:
+                    grid_2 = np.concatenate((grid_2,[[i,j]]), axis = 0)
+                init_2 += 1
+        
+
+
+    plt.figure()
+    plt.subplot(3,1,1)
+    plt.scatter(data[:val_i ,0],data[:val_i ,1],labels + 2,linewidths=5,edgecolors='g')
+    plt.scatter(data[val_i :,0],data[val_i :,1],labels + 2,linewidths=5,edgecolors='r')
+    plt.title("Scatter plot of data")
+    plt.xlabel("x1")
+    plt.ylabel("x2")
+
+    plt.subplot(3,1,3)
+    plt.scatter(grid_1[:,0],grid_1[:,1],linewidths = 1,edgecolors='g',alpha=0.1)
+    plt.scatter(grid_2[:,0],grid_2[:,1],linewidths = 1,edgecolors='r',alpha=0.1)
+    plt.title("Scatter plot of decision boundaries")
+    plt.xlabel("x1")
+    plt.ylabel("x2")
+
+    ccr = 0
+    counter = 0
+    for i in data:
+        point = np.array([i])
+        ccr += (labels[counter] == Tree.evaluate_point(tree,point))
+        counter +=1
+    
+    print(counter)
+    print("This is the CCR " , str(ccr/(counter)))
+
+    plt.show()
+
+if __name__ == "__main__":
+    main()
+
+
