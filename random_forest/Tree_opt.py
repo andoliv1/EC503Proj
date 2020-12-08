@@ -37,11 +37,15 @@ class Tree:
             # print(data)
             # print(labels)
             tree.val = np.sign(np.sum(labels))
+            print(tree.val)
             return tree
 
         else:
             # if all of the data inside your node just belongs to one class than you don't need to keep splitting the data so just
             # assign the correct val to your node and return
+            # print(labels)
+            # print(type(labels))
+            # print(data)
             if((labels == 1).all() or (labels == -1).all()):
                 tree.val = labels[0]
                 return tree
@@ -63,15 +67,17 @@ class Tree:
             
             #record the best split onto your tree object
             tree.boundary = np.array([best_split,best_dimension])
-
-            if(data_left != None and data.size == data_left.size):
+            # if(data_left is not None):
+            if(data_left is not None and data.size == data_left.size):
                 #make the left tree and right tree recursively based on the same idea until you reach the depth wanted
                 tree_left = Tree(None,tree.depth - 1,None,None,0)
                 tree_left = Tree.make_tree(tree_left,data_left,labels_left,want_random,num_random)
                 tree.left = tree_left
                 tree.right = None
+                return tree
 
-            elif(data_right != None and data.size == data_right.size):
+            # if(data_right is not None):
+            elif(data_right is not None and data.size == data_right.size):
                 tree_right = Tree(None,tree.depth - 1,None,None,0)
                 tree_right = Tree.make_tree(tree_right,data_right,labels_right,want_random,num_random)
                 tree.right = tree_right
@@ -87,8 +93,9 @@ class Tree:
                 tree_right = Tree(None,tree.depth - 1,None,None,0)
                 tree_right = Tree.make_tree(tree_right,data_right,labels_right,want_random,num_random)
                 tree.right = tree_right
+                return tree
 
-        return tree
+        
   
     @staticmethod
     def make_optimal_split(data,labels,random_dimensions):
@@ -127,19 +134,22 @@ class Tree:
             b_2 = np.zeros(2)
             b_2[0] = num_positive
             b_2[1] = num_negative
-
-
+            
+            # print(np.sum(b_2))
             for i in range(len(new_labels)):    
                 # calculate the impurity score of the split
+                if(new_labels[i] != 1 and new_labels[i] != - 1):
+                    print("hooray")
+                
                 if(new_labels[i] == 1):
                     b_1[0] += 1
                     b_2[0] -= 1
+
                 else:
+                    # print(new_labels[i])
                     b_1[1] += 1
                     b_2[1] -= 1
 
-                # print(b_1)
-                # print(b_2)
                 impurity_temp = Tree.compute_index(b_1,b_2)
 
                 # if this is the best found split record it 
@@ -170,6 +180,8 @@ class Tree:
         """
         counter_1 = np.sum(b_1)
         counter_2 = np.sum(b_2)
+        if(counter_1 < 0 or counter_2 < 0):
+            print("yayeet")
 
         # if there are no points in b_1
         if(np.sum(b_1) == 0):
