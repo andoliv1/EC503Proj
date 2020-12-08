@@ -2,7 +2,7 @@
 Code for EC503 Project
 References: (to be inputted)
 """
-
+import random
 import numpy as np
 from numpy.random import randint
 class Tree:
@@ -50,7 +50,7 @@ class Tree:
             dimensions = data[0].size
             if(want_random == 1):
                 # generate the subset of num_random features, Note: currently this is generating with replacement so I have to fix that
-                dim_array =  randint(0,dimensions,num_random)
+                dim_array =  random.sample(range(0,dimensions),num_random)
             
             else:
                 # if you don't want random than you want to greedily split across all dimensions
@@ -192,59 +192,7 @@ class Tree:
 
         return impurity_score
 
-    @staticmethod
-    def split_data(data,labels,best_split,best_dimension):
-        """
-        data: numpy array that contains the data which we want to split the data on
-        labels: numpy array that contains the labels of the data
-        best_split: integer that holds the value that data points will be compared to when splitting the data
-        best_dimension: integer that holds the coordinate that data points will be indexed to compare their value at that coordinate with the 
-        best_split integer value
-        """
-        #initialize local variables to help check whether points have been assigned to the data smaller and greater than the split
-        init_1 = 0
-        init_2 = 0
-
-        counter = 0
-        for i in data:
-            
-            #if the data value is smaller than the best_split at the given best_dimension location
-            # print(i)
-            if(i[best_dimension] <= best_split):
-
-                # if there have been no points smaller than the split yet initialize the array to contain these points
-                if(init_1 == 0):
-                    data_1 = np.array([i])
-                    label_1 = np.array([labels[counter]])
-                    init_1 += 1
-                
-                #if there have been points smaller than the split append it to the array containing these points
-                else:
-                    data_1 =np.concatenate((data_1,[i]), axis = 0)
-                    label_1 = np.concatenate((label_1,[labels[counter]]),axis=0)
-
-            # do the same as the previous if statement but for an array containing points larger than the split
-            else:
-                if(init_2 == 0):
-                    data_2 = np.array([i])
-                    label_2 = np.array([labels[counter]])
-                    init_2 += 1
-                else:
-                    data_2 = np.concatenate((data_2,[i]),axis = 0)
-                    label_2 = np.concatenate((label_2,[labels[counter]]),axis=0)
-            counter +=1
-        
-        # assign something to the variables you will return if they weren't initalized during the for loop
-        if(init_1 == 0):
-            data_1 = None
-            label_1 = None
-        if(init_2 == 0):
-            data_2 = None
-            label_2 = None
-        
-
-        return [data_1,data_2,label_1,label_2]
-
+    
 
     @staticmethod
     def evaluate_point(tree,test_point):
