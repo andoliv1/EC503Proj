@@ -104,7 +104,10 @@ class Tree:
         best_impurity_score = 1
         best_split = 0
         best_dimension = 0
-
+        data_left = None
+        data_right = None
+        labels_left = None
+        labels_right = None
 
         num_positive = np.sum(labels == 1)
         num_negative = np.sum(labels == -1)
@@ -150,8 +153,8 @@ class Tree:
                     labels_left = new_labels[:i+1]
                     labels_right = new_labels[i+1:]
 
-        # print(best_split)
-        # print(best_dimension)
+
+
 
         return [best_split,best_impurity_score,best_dimension,data_left,data_right,labels_left,labels_right]
 
