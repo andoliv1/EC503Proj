@@ -50,7 +50,7 @@ print(X)
 # Random Forest Learning and Predictions for Circle Noise
 depth = 10
 sub_features = 'log2' #'sqrt' and int options too
-num_trees = 1000
+num_trees = 10
 bootstrap_ratio = .3
 random_forest(X_Train, Y_Train, bootstrap_ratio, sub_features, depth, num_trees)
 Y_Pred = random_forest_pred(X_Train)
