@@ -40,7 +40,7 @@ print("Training CCR is: " + str(trainccr))
 print("Testing CCR is: " + str(testccr))
 
 # Importing the datasets for Circle Noise 
-datasets = pd.read_csv('circle_noise.csv')
+datasets = pd.read_csv('data/circle_noise.csv')
 X = datasets.iloc[:, [0,1]].values
 Y = datasets.iloc[:, 2].values
 
