@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 from visuals_alt import plotres
 from copy import deepcopy as dc
 from sklearn.datasets import make_gaussian_quantiles
-from WeightedTree import WeightedTree
+from WeightedTree_opt import WeightedTree
+import pandas as pd
 
 
 #initialize sample dataset
@@ -24,6 +25,9 @@ n = 100
 # Y[6:11] = -1
 # print(Y)
 X, Y = make_gaussian_quantiles(n_samples=n, n_classes=2, n_features=2)
+# datasets = pd.read_csv('circle_noise.csv')
+# X = datasets.iloc[:, [0,1]].values
+# Y = datasets.iloc[:, 2].values
 # print(X)
 # print(Y)
 Y = Y*2-1

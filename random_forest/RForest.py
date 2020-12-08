@@ -6,7 +6,7 @@ import random
 import scipy.stats
 import pickle
 # Decision Tree Classifier Function
-from Tree import Tree
+from Tree_opt import Tree
 
 # Importing the datasets
 datasets = pd.read_csv('Social_Network_Ads.csv')
@@ -50,6 +50,8 @@ def random_forest(X_Train, Y_Train, bootstrap_ratio, sub_features, depth, num_tr
         tree = classifier
         tree = Tree.make_tree(tree,X_Train,Y_Train,1,sub_features)
         pickle.dump(tree, file)
+        print("hello")
+    print("HELLO")
     file.close
 
 # Ensemble Predictions

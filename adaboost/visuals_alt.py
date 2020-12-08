@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from WeightedTree import WeightedTree
+from WeightedTree_opt import WeightedTree
 
 
 ## function below plots 2d adaboost results

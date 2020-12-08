@@ -1,5 +1,5 @@
 import numpy as np
-from WeightedTree import WeightedTree
+from WeightedTree_opt import WeightedTree
 
 
 class AdaBst_Alt:
