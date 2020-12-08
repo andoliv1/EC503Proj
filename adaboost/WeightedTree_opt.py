@@ -190,21 +190,21 @@ class WeightedTree:
         counter_2 = np.sum(b_2)
         # print(b_2)
         # if there are no points in b_1
-        if(round(np.sum(b_1),5) == 0):
+        if(round(np.sum(b_1),10) == 0):
             impurity_score_1 = 0
         
         # if there are points than compute the gini index of b_1
         else:
-            b_1 = b_1/(round(np.sum(b_1),5))
+            b_1 = b_1/(round(np.sum(b_1),10))
             impurity_score_1 = 1 - (b_1[0]**2) - (b_1[1]**2)
         
         # if there are no points in b_2
-        if(round(np.sum(b_2),5) == 0):
+        if(round(np.sum(b_2),10) == 0):
             impurity_score_2 = 0
 
         # if there are points than compute the gini index of b_2
         else:
-            b_2 = b_2/(round(np.sum(b_2),5))
+            b_2 = b_2/(round(np.sum(b_2),10))
             impurity_score_2 = 1 - (b_2[0]**2) - (b_2[1]**2)
            
 
