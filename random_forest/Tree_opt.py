@@ -64,14 +64,14 @@ class Tree:
             #record the best split onto your tree object
             tree.boundary = np.array([best_split,best_dimension])
 
-            if(data.size == data_left.size):
+            if(data_left != None and data.size == data_left.size):
                 #make the left tree and right tree recursively based on the same idea until you reach the depth wanted
                 tree_left = Tree(None,tree.depth - 1,None,None,0)
                 tree_left = Tree.make_tree(tree_left,data_left,labels_left,want_random,num_random)
                 tree.left = tree_left
                 tree.right = None
 
-            elif(data.size == data_right.size):
+            elif(data_right != None and data.size == data_right.size):
                 tree_right = Tree(None,tree.depth - 1,None,None,0)
                 tree_right = Tree.make_tree(tree_right,data_right,labels_right,want_random,num_random)
                 tree.right = tree_right
