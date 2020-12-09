@@ -48,6 +48,7 @@ def random_forest(X_Train, Y_Train, bootstrap_ratio, sub_features, depth, num_tr
         [X_sam, Y_sam] = bootstrap(X_Train, Y_Train, bootstrap_ratio)
         tree = classifier
         tree = Tree.make_tree(tree,X_Train,Y_Train,1,sub_features)
+        print("Tree " + str(i))
         pickle.dump(tree, file)
     file.close
 
