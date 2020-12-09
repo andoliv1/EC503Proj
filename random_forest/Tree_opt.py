@@ -37,7 +37,7 @@ class Tree:
             # print(data)
             # print(labels)
             tree.val = np.sign(np.sum(labels))
-            print(tree.val)
+            # print(tree.val)
             return tree
 
         else:
