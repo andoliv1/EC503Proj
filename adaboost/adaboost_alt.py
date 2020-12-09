@@ -51,15 +51,14 @@ class AdaBst_Alt:
 
             # 3) find predictions and error
             Ypred = WeightedTree.evaluate_data(tree=stump, data=self.X)
-            # print(Ypred)
-            # print(self.Y)
-            # print("current weight")
             # print(curr_smp_w)
             errcurr = curr_smp_w[(Ypred != self.Y)]
             errcurr = sum(errcurr)
-            # print("This is the error")
-            # print(errcurr)
-            alphat = 0.5 * np.log((1 - errcurr) / errcurr)
+            if(errcurr == 0):
+                alphat = 1
+            else:
+                alphat = 0.5 * np.log((1 - errcurr) / errcurr)
+
             # calculating and renormalizing weight distribution for current stump for later visualization
             new_smp_w = (
                     curr_smp_w * np.exp(-alphat * self.Y * Ypred)

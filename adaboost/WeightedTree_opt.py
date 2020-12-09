@@ -81,15 +81,16 @@ class WeightedTree:
             # record the best split onto your tree object
             tree.boundary = np.array([best_split, best_dimension])
 
-            if (data.size == data_left.size):
+            if (data_left is not None and data.size == data_left.size):
                 # make the left tree and right tree recursively based on the same idea until you reach the depth wanted
                 tree_left = WeightedTree(None, tree.depth - 1, None, None, 0)
                 tree_left = WeightedTree.make_tree(tree_left, data_left, labels_left, want_random, num_random,
                                                    weight_left)
                 tree.left = tree_left
                 tree.right = None
+                return tree
 
-            elif (data.size == data_right.size):
+            elif (data_right is not None and data.size == data_right.size):
                 tree_right = WeightedTree(None, tree.depth - 1, None, None, 0)
                 tree_right = WeightedTree.make_tree(tree_right, data_right, labels_right, want_random, num_random,
                                                     weight_right)
@@ -108,8 +109,9 @@ class WeightedTree:
                 tree_right = WeightedTree.make_tree(tree_right, data_right, labels_right, want_random, num_random,
                                                     weight_right)
                 tree.right = tree_right
+                return tree
 
-        return tree
+        
 
     @staticmethod
     def make_optimal_split(data, labels, random_dimensions, weight):
@@ -127,6 +129,13 @@ class WeightedTree:
         prob_positive = np.sum(weight[positive])
         negative = (labels == -1)
         prob_negative = np.sum(weight[negative])
+
+        data_left = None 
+        data_right = None
+        labels_left = None 
+        labels_right = None
+        weight_left = None
+        weight_right = None
 
         # since we don't necessarily want to split the data at a point split it a little bit after a point, although this doesn't really matter
 
