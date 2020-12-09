@@ -62,4 +62,11 @@ testccr = sum(Y_Pred_test==Y_Test)/Y_Test.size
 print("Training CCR is: " + str(trainccr))
 print("Testing CCR is: " + str(testccr))
 
+# from sklearn.ensemble import RandomForestClassifier
+# clf = RandomForestClassifier(n_estimators=10, max_depth=10, random_state=0)
+# clf.fit(X_Train, Y_Train)
+# Y_Pred = clf.predict(X_Train)
+# Y_Pred_test = clf.predict(X_Test)
 
+# print(sum(Y_Pred == Y_Train)/Y_Train.size)
+# print(sum(Y_Pred_test == Y_Test)/Y_Test.size)
