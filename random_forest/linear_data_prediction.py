@@ -6,51 +6,45 @@ import random
 import scipy.stats
 import pickle
 from RForest import random_forest, random_forest_pred
-from sklearn.datasets import make_gaussian_quantiles
 from Tree_opt import Tree
 
 # setting figure
 figure, axes = plt.subplots(figsize=(5, 5), dpi=100)
 
-#initialize sample dataset
-mu = 0
-sigma = 1
-n = 400
-
-X, Y = make_gaussian_quantiles(n_samples=n, n_classes=2, n_features=2,random_state = 0)
-
-Y = Y*2-1
+# Importing the datasets
+datasets = pd.read_csv('data/linearly_separable_in_two_d.csv')
+# there are other datasets you can load if you want namely data/linearly _separable_in_two_d, data/almost_linearly_separable 
+# if you want to see some other decision boundaries
+X = datasets.iloc[:, [0,1]].values
+Y = datasets.iloc[:, 2].values
 
 X_Train = X
 Y_Train = Y
 
-# # Splitting the dataset into the Training set and Test set
-from sklearn.model_selection import train_test_split
-# X_Train, X_Test, Y_Train, Y_Test = train_test_split(X, Y, test_size = 0.25, random_state = 0)
-
 # Random Forest Learning and Predictions
-depth = 7
+depth =5
 sub_features = 'log2' #'sqrt' and int options too
-num_trees = 14
+num_trees = 8
 bootstrap_ratio = .3
 random_forest(X_Train, Y_Train, bootstrap_ratio, sub_features, depth, num_trees)
 Y_Pred = random_forest_pred(X_Train)
-# Y_Pred_test = random_forest_pred(X_Test)
 
 # Training and Testing CCR
 trainccr = sum(Y_Pred==Y_Train)/Y_Train.size
 print("Training CCR is: " + str(trainccr))
 
-x1, x2 = np.meshgrid(np.arange(-4, 4,0.1),
-                             np.arange(-4, 4, 0.1))
+x1, x2 = np.meshgrid(np.arange(0, 100,0.5),
+                             np.arange(0, 100, 0.5))
 
 Xcls1 = X[Y == 1]
 Xcls2 = X[Y == -1]
 
-axes.scatter(*Xcls1.T, marker='.', color='mediumvioletred')
-axes.scatter(*Xcls2.T, marker='.', c='royalblue')
+axes.scatter(*Xcls1.T, marker='o',color='mediumvioletred')
+axes.scatter(*Xcls2.T, marker='o', c='royalblue')
 
+print("hello")
 Ydec = random_forest_pred(np.c_[x1.ravel(), x2.ravel()])
+print("done")
 Ydec = Ydec.reshape(x1.shape)
 
 if sum(np.unique(Ydec)) == 0:
@@ -64,7 +58,5 @@ else:
 axes.contourf(x1, x2, Ydec, colors=class_regions, alpha=0.3)
 axes.set_xlabel('x_1')
 axes.set_ylabel('x_2')
-axes.set_title('Plot of Random forests on gaussian dataset')
+axes.set_title('Plot of Random forests on linearly separable in on dimension dataset')
 plt.show()
-
-
